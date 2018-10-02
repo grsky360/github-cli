@@ -1,0 +1,39 @@
+{
+  "name": "github-cli",
+  "version": "1.0.0",
+  "description": "github cli",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grsky360/github-cli.git"
+  },
+  "bin": {
+    "github-cli": "./bin/index.js"
+  },
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc --build tsconfig.json",
+    "ins": "npm run build && npm install -g"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.12.1",
+    "@types/chalk": "^2.2.0",
+    "@types/commander": "^2.12.2",
+    "@types/fs-extra": "^5.0.4",
+    "@types/inquirer": "0.0.43",
+    "@types/node": "^10.11.3",
+    "chalk": "^2.4.1",
+    "commander": "^2.18.0",
+    "core-js": "^2.5.7",
+    "fs-extra": "^7.0.0",
+    "inquirer": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/core-js": "^2.5.0",
+    "parcel-bundler": "^1.10.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.1"
+  }
+}
