@@ -50,12 +50,28 @@ const commandOptions: CommandOption[] = [
         hasSub: true,
         subCommands: [
             {
-                command: 'help',
-                description: 'help',
+                command: 'list',
+                description: 'list',
                 hasSub: false,
-                action: () => {
-                    console.log('help')
-                }
+                action: repo.list
+            },
+            {
+                command: 'create',
+                description: 'create',
+                hasSub: false,
+                action: repo.create
+            },
+            {
+                command: 'delete',
+                description: 'delete',
+                hasSub: false,
+                action: repo.delete
+            },
+            {
+                command: 'info',
+                description: 'info',
+                hasSub: false,
+                action: repo.info
             }
         ]
     }

@@ -1,6 +1,7 @@
-import inquirer from 'inquirer';
+import { prompt } from 'inquirer';
 import fs from 'fs-extra'
 import client from '../utils/GithubApi'
+import { autobind } from 'core-decorators';
 
 type UserStore = {
     username?: string
@@ -9,12 +10,13 @@ type UserStore = {
     token?: string
 }
 
-class User {
-    private readonly configFile = '.github-cli.json'
-    private readonly note = 'Github-CLI'
-    private readonly allScopes = ['repo', 'admin:org', 'admin:public_key', 'admin:repo_hook', 'admin:org_hook', 'gist', 'notifications', 'user', 'delete_repo', 'write:discussion', 'admin:gpg_key']
+@autobind
+class UserAction {
+    readonly configFile = '.github-cli.json'
+    readonly note = 'Github-CLI'
+    readonly allScopes = ['repo', 'admin:org', 'admin:public_key', 'admin:repo_hook', 'admin:org_hook', 'gist', 'notifications', 'user', 'delete_repo', 'write:discussion', 'admin:gpg_key']
 
-    private store = (configs?: UserStore): UserStore => {
+    store (configs?: UserStore): UserStore {
         if (configs) {
             fs.writeJSONSync(this.configFile, configs)
             return configs
@@ -27,7 +29,7 @@ class User {
         }
     }
 
-    public basicAuth = async (username: string, password: string) => {
+    async basicAuth(username: string, password: string) {
         client.authenticate({
             type: 'basic',
             username: username,
@@ -52,8 +54,7 @@ class User {
             token: token
         })
     }
-
-    public tokenAuth = (token: string) => {
+    async tokenAuth(token: string) {
         try {
             client.authenticate({
                 type: 'oauth',
@@ -63,13 +64,18 @@ class User {
             this.store({})
         }
     }
+}
 
-    public login = async () => {
-        let us = this.store()
+@autobind
+class User {
+    action = new UserAction()
+
+    async login() {
+        let us = this.action.store()
         if (us && us.username && us.token) {
-             this.tokenAuth(us.token)
+             this.action.tokenAuth(us.token)
         } else {
-            let { username, password }: any = await inquirer.prompt([
+            let { username, password }: any = await prompt([
                 {
                     type: 'input',
                     name: 'username',
@@ -81,12 +87,12 @@ class User {
                     message: 'Github password',
                 }
             ])
-            this.basicAuth(username, password)
+            this.action.basicAuth(username, password)
         }
     }
 
-    public logout = () => {
-        this.store({})
+    logout() {
+        this.action.store({})
     }
 }
 
