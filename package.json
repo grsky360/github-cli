@@ -1,9 +1,9 @@
 {
-  "name": "github-cli",
-  "version": "1.0.0",
+  "name": "@grsky360/github-cli",
+  "version": "0.0.1",
   "description": "github cli",
   "main": "index.js",
-  "author": "",
+  "author": "Hyia",
   "license": "ISC",
   "repository": {
     "type": "git",
