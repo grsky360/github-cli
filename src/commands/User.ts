@@ -38,7 +38,7 @@ class UserAction {
         let a = (await client.authorization.getAll({})).data.find(item => item.note === this.note)
         if (a) {
             await client.authorization.delete({
-                authorization_id: '' + a.id
+                authorization_id: a.id
             })
         }
         let c = await client.authorization.create({

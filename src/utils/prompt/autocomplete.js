@@ -173,14 +173,17 @@ class AutocompletePrompt extends Base {
     var thisPromise = (function(input, answers) {
       input = input || "";
       return new Promise(function(resolve) {
-        setTimeout(function() {
-          var fuzzyResult = fuzzy.filter(input, self.opt.source);
-          resolve(
-            fuzzyResult.map(function(el) {
-              return el.original;
-            })
-          );
-        }, 20);
+        let filterTimeout = self.opt.filterTimeout || 20
+        clearTimeout(self.filterTimeout)
+        self.filterTimeout = setTimeout(function() {
+          let filterStrategy = self.opt.filterStrategy
+          if (filterStrategy) {
+            let filterResult = filterStrategy
+            resolve(filterStrategy(input, self.opt.source))
+          } else {
+            resolve(fuzzy.filter(input, self.opt.source).map(el => el.original))
+          }
+        }, filterTimeout);
       });
     })(searchTerm, self.answers);
 

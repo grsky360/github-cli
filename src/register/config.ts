@@ -1,6 +1,7 @@
 import commander, { Command } from 'commander'
 import user from '../commands/User'
 import repo from '../commands/Repo'
+import search from '../commands/Search'
 
 export type CommandOption = HasSub | NoSub
 export type BasicCommandOption = {
@@ -72,6 +73,50 @@ const commandOptions: CommandOption[] = [
                 description: 'info',
                 hasSub: false,
                 action: repo.info
+            }
+        ]
+    },
+    {
+        command: 'search',
+        description: 'search',
+        hasSub: true,
+        subCommands: [
+            {
+                command: 'user',
+                description: 'user',
+                hasSub: false,
+                action: search.user
+            },
+            {
+                command: 'repo',
+                description: 'repository',
+                hasSub: false,
+                action: search.repo
+            }
+        ]
+    },
+    {
+        command: 'test1',
+        hasSub: true,
+        subCommands: [
+            {
+                command: 'test2',
+                hasSub: true,
+                subCommands: [
+                    {
+                        command: 'test3',
+                        hasSub: true,
+                        subCommands: [
+                            {
+                                command: 'test4',
+                                hasSub: false,
+                                action: () => {
+                                    console.log('test1234')
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     }

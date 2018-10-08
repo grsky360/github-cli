@@ -1,40 +1,21 @@
-import client,  { loginRequred } from '../utils/GithubApi'
+import client,  { loginRequired, filterFields } from '../utils/GithubApi'
 import prompt from '../utils/prompt'
 import { autobind } from 'core-decorators'
 import { ReposGetResponse } from '@octokit/rest';
 
-type InfoOption = {
-    fields?: (keyof(ReposGetResponse))[]
-}
 class RepoAction {
 
-    @loginRequred.check()
-    async getList(option: InfoOption = { fields: [] }) {
-        let { fields } = option
+    @loginRequired.check()
+    async getList(fields: (keyof(ReposGetResponse))[] = []) {
         let results: ReposGetResponse[] = (await client.repos.getAll({})).data
-        let outputArray: Dict<any>[] = []
-        results.map(result => {
-            let outputMap = {}
-            if (fields && fields.length != 0) {
-                fields.map(field => {
-                    if (result[field] !== undefined) {
-                        outputMap[field] = result[field]
-                    }
-                })
-            } else {
-                for (let field in result) {
-                    outputMap[field] = result[field]
-                }
-            }
-            outputArray.push(outputMap)
-        })
-        return outputArray
+        return filterFields(results, fields)
     }
 
-    @loginRequred.check()
+    @loginRequired.check()
     async create() {
         let { repoName, isPrivate, description }: any = await prompt([
             {
+                type: 'input',
                 name: 'repoName',
                 message: 'New repository name: ',
                 validate: inp => !!inp
@@ -46,6 +27,7 @@ class RepoAction {
                 default: false
             },
             {
+                type: 'input',
                 name: 'description',
                 message: 'Description: '
             }
@@ -58,9 +40,9 @@ class RepoAction {
         console.log({full_name, name, html_url, ssh_url, clone_url})
     }
 
-    @loginRequred.check()
+    @loginRequired.check()
     async delete(repo: string) {
-        let username = loginRequred.username()
+        let username = loginRequired.username()
         await client.repos.delete({
             owner: username,
             repo
@@ -73,7 +55,7 @@ class Repo {
     action = new RepoAction()
 
     async list() {
-        let outputArray = await this.action.getList({ fields: ['id', 'private'] })
+        let outputArray = await this.action.getList(['id', 'private', 'name'])
         outputArray.map(map => {
             console.log(map)
         })
@@ -84,7 +66,7 @@ class Repo {
     }
 
     async delete() {
-        let list = await this.action.getList({ fields: [ 'name' ] })
+        let list = await this.action.getList(['name'])
         let { repo, confirmed } = await prompt([
             {
                 type: 'autolist',
@@ -105,7 +87,7 @@ class Repo {
     }
 
     async info() {
-        let list = await this.action.getList({ fields: [ 'name', 'full_name' ] })
+        let list = await this.action.getList(['name', 'full_name'])
         let { repo } = await prompt([
             {
                 type: 'autolist',

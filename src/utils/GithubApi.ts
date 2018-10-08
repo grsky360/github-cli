@@ -1,10 +1,11 @@
 import Octokit from '@octokit/rest'
 import user from '../commands/User'
-import { autobind } from 'core-decorators';
+
+export default new Octokit()
 
 type Option = {
 }
-class LoginRequred {
+export const loginRequired = new class LoginRequired {
     hasLogined = false
     check(option: Option = {}) {
         let self = this
@@ -25,9 +26,29 @@ class LoginRequred {
     }
 }
 
-const octokit = new Octokit()
-const loginRequred = new LoginRequred
-export {
-    octokit as default,
-    loginRequred
-} 
+export function filterFields<T>(source: T | T[], fields: (keyof(T))[] = []): T | T[] | any {
+    const filter = (source: T): T => {
+        let target = {} as T
+        if (fields && fields.length) {
+            fields.map(field => {
+                if (source[field] !== undefined) {
+                    target[field] = source[field]
+                }
+            })
+        } else {
+            for (let field in source) {
+                target[field] = source[field]
+            }
+        }
+        return target
+    }
+
+    if (source instanceof Array) {
+        let target = [] as T[]
+        let s = <T[]>source
+        s.map(item => target.push(filter(item)))
+        return target
+    } else {
+        return filter(source)
+    }
+}
