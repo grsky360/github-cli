@@ -1,6 +1,6 @@
 {
   "name": "@grsky360/github-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "github cli",
   "main": "index.js",
   "author": "Hyia",
