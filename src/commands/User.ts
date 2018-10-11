@@ -12,7 +12,7 @@ type UserStore = {
 
 @autobind
 class UserAction {
-    readonly configFile = '.github-cli.json'
+    readonly configFile = require('path').join(__dirname, '.github-cli.json')
     readonly note = 'Github-CLI'
     readonly allScopes = ['repo', 'admin:org', 'admin:public_key', 'admin:repo_hook', 'admin:org_hook', 'gist', 'notifications', 'user', 'delete_repo', 'write:discussion', 'admin:gpg_key']
 
